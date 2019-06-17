@@ -1,8 +1,10 @@
 #!/bin/bash
+set -e
 
 rm -rf quickfix
 
-git clone --depth 1 https://github.com/quickfix/quickfix.git
+yum -y install postgresql-libs postgresql-devel
+git clone --depth 1 https://github.com/gbirchmeier/quickfix.git -b pythonpostgres
 rm -rf quickfix/.git
 
 #Install for the python at hand
@@ -37,7 +39,7 @@ rm -f quickfix-python/C++/stdafx.*
 pushd quickfix-python
 for PYBIN in /opt/python/*/bin/; do
 	echo "$PYBIN"
-	"${PYBIN}/pip" wheel . -w quickfix-python-wheels
+	"${PYBIN}/pip" wheel . -w quickfix-python-wheels -v
 done
 for whl in quickfix-python-wheels/*.whl; do
     auditwheel repair "$whl" -w /io/quickfix-python-wheels/
